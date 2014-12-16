@@ -48,7 +48,8 @@ class PageImage(object):
         self.verbose = verbose
 
         # get page from PDF
-        cmd = "pdfseparate -l %s -f %s %s tmp.pdf" % (page, page, fn)
+        # cmd = "pdfseparate -l %s -f %s %s tmp.pdf" % (page, page, fn)
+        cmd = "pdfjam --outfile tmp.pdf -- %s %s" % (fn, page)
         if verbose:
             print cmd
         os.system(cmd)
@@ -66,6 +67,11 @@ class PageImage(object):
             return float(x) * 1.0/72
 
         hrbb = map(pt2in, hrbb_str)
+        # EVH
+        hrbb[0] += 0.125
+        hrbb[2] += 0.125
+        hrbb[1] -= 0.25
+        hrbb[3] -= 0.25
 
         if verbose:
             print "BoundingBox (inches): %s" % hrbb
@@ -76,7 +82,8 @@ class PageImage(object):
         self.hrbb = hrbb
 
         # generate PNG from cropped PDF
-        cmd = "pdftoppm -r %s -png %s > %s" % (dpi, pdfimfn, imfn)
+        # cmd = "pdftoppm -r %s -png %s > %s" % (dpi, pdfimfn, imfn)
+        cmd = "convert -density %s %s %s" % (dpi, pdfimfn, imfn)
         if verbose:
             print cmd
         os.system(cmd)
@@ -177,7 +184,8 @@ class Box(object):
         # points in *.pos file from latex measured from lower left corner of page
         # page is nominally 8.5 x 11
         def toinches(x):
-            return float(x) * (1.0/72.27)/65536
+            # return float(x) * (1.0/72.27)/65536
+            return float(x) * (1.0/72)/65536
 
         # llx, lly, urx, ury = map(toinches, numbers.split(', '))
         self.pos = map(toinches, self.numbers.split(', '))
