@@ -64,14 +64,12 @@ class PageImage(object):
 
 	# turn bounding box into units of inches
         def pt2in(x):
-            return float(x) * 1.0/72
+            return float(x) * 1.0/70
 
         hrbb = map(pt2in, hrbb_str)
         # EVH
-        hrbb[0] += 0.125
-        hrbb[2] += 0.125
-        hrbb[1] -= 0.25
-        hrbb[3] -= 0.25
+        hrbb[1] -= 0.5
+        hrbb[3] -= 0.5
 
         if verbose:
             print "BoundingBox (inches): %s" % hrbb
@@ -83,7 +81,7 @@ class PageImage(object):
 
         # generate PNG from cropped PDF
         # cmd = "pdftoppm -r %s -png %s > %s" % (dpi, pdfimfn, imfn)
-        cmd = "convert -density %s %s %s" % (dpi, pdfimfn, imfn)
+        cmd = "convert -background white -flatten -density %s %s %s" % (dpi, pdfimfn, imfn)
         if verbose:
             print cmd
         os.system(cmd)
